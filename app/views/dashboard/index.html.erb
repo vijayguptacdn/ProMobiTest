@@ -1,0 +1,114 @@
+ <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <!-- Main content -->
+    <section class="content">
+      <!-- /.row -->
+      <div class="row">
+        <div class="col-xs-12">
+          <div class="box">
+            <div class="box-header">
+              <h3 class="box-title">
+                <% if current_user.manager?%> 
+                 Task list of Developers 
+                <%else%>
+                  Project wise task details 
+                <% end%>
+              </h3>
+            </div>
+            <!-- /.box-header -->
+            <div class="box-body table-responsive no-padding">
+              <table class="table table-hover">
+                <% if current_user.manager?%> 
+                  <tr>
+                   <th>Status</th>
+                    <% @users.each do |user|%>
+                     <th><%= user.name%></th>
+                    <% end %>
+                  </tr>
+                  <% @todos.each do |status, records|%>
+                    <tr>
+                       <%class_name =  get_status_class(status)%>
+                      <td><span class="label <%= class_name%> "><%= status%></span></td>
+                      <% @users.each do |user|%>
+                       <td> <%= records.select {|a|a.assign_user_id == user.id}.map(&:name).join("<br>").html_safe%></td>
+                      <% end %>
+                    </tr>
+                    <% end %>
+                <% elsif current_user.developer? %>
+                  <% if @todos.present?%>
+                    <th>status</th>
+                    <% @projects.each do |project|%>
+                     <th><%= project.name%></th>
+                    <% end %>
+                    <% @todos.each do |status, records|%>
+                      <tr>
+                        <%class_name =  get_status_class(status)%>
+                      <td><span class="label <%= class_name%> "><%= status%></span></td>
+                         <td> <%= records.select {|a| @projects.map(&:id).include?(a.project_id) }.map(&:name).join("<br>").html_safe%></td>
+                      </tr>
+                    <% end %>
+                  <% else %>  
+                    <tr>
+                      <td colspan="3"> No projects are asign yet</td>
+                    </tr>
+                  <% end %>
+
+                <% end %>    
+              </table>
+            </div>
+            <!-- /.box-body -->
+          </div>
+          <!-- /.box -->
+        </div>
+      </div> 
+
+    
+    <% if current_user.manager? %>
+    <% @projects.each do |project |%>
+      <div id="piechart_<%= project.id%>" ></div>
+    <% end %>
+     <% end %>
+    </section>
+    <!-- /.content -->
+  </div>
+
+
+    <script type="text/javascript">
+      $(function(){
+       <%chart_data = []%>
+       <% @projects.each do |project|%>
+
+       <% chart ={} %>
+          google.charts.load('current', {'packages':['corechart']});
+       <%
+          chart[:name] = project.name 
+          chart[:id]   = project.id.to_s 
+          chart[:data] = project.get_chart_data
+          chart_data << chart 
+
+        %>
+         google.charts.setOnLoadCallback(drawChart);
+       <% end %>
+       
+     });
+
+      function drawChart() {
+       <% chart_data.each do |chart|%>
+        console.log('<%= chart[:data].to_json.html_safe %>')
+        var data = google.visualization.arrayToDataTable([
+            ['Task', 'Hours per Day'],
+            ['new',     11],
+            ['In-progess',      2],
+            ['done',  2]
+          ]);
+
+        var options = {
+          title: "<%=chart[:name] %>"
+        };
+
+        var chart = new google.visualization.PieChart(document.getElementById('piechart_' + "<%= chart[:id]%>"));
+
+        chart.draw(data, options);
+       <%end %>  
+      }     
+    </script>

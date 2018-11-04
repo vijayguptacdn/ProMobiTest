@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>ProMobiTest</title>
+    <%= csrf_meta_tags %>
+
+    <%= stylesheet_link_tag 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css'%>
+    <%= stylesheet_link_tag 'https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css'%>
+    <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload' %>
+    <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
+    <%= javascript_include_tag 'https://code.jquery.com/ui/1.11.4/jquery-ui.min.js'%>
+    <%= javascript_include_tag 'https://cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js'%>
+    <%= javascript_include_tag 'https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js'%>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+
+
+  </head>
+
+  <body class="<%= get_class_name(params)%>">
+  	<div class="wrapper">
+      <% if current_user %>
+      <%= render :partial => "layouts/header" %>
+      <%= render :partial => "layouts/side_bar" %>
+      <% end %>
+  	
+    <%= yield %>
+    <% if current_user %>
+    <%= render :partial => "layouts/footer" %>
+    <% end %>
+
+  </div>
+  </body>
+</html>

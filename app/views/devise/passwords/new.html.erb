@@ -1,0 +1,33 @@
+<div class="register-box">
+  <div class="register-logo">
+    <a href="../../index2.html"><b>Admin</b>LTE</a>
+  </div>
+
+  <div class="register-box-body" style="padding:37px;">
+    <p class="login-box-msg">Forget Your Password</p>
+	<%= form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :post }) do |f| %>
+        <%= devise_error_messages! %>  
+
+      <div class="form-group has-feedback">
+        <%= f.email_field :email, autofocus: true ,class: "form-control",:placeholder =>"Email"%>
+        <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
+      </div>
+ 
+    
+        <!-- /.col -->
+        <div class="col-xs-4">
+          <%= f.submit "Reset Password" ,:class =>"btn btn-primary "%>
+        </div>
+        <!-- /.col -->
+      	
+    <% end %>
+
+    <%- if controller_name != 'sessions' %>
+	    <div class="col-xs-4 pull-right ">
+	      <%= link_to "Sign In", new_session_path(resource_name) %><br />
+	  </div>
+    <% end -%>
+   
+  </div>
+  <!-- /.form-box -->
+</div>

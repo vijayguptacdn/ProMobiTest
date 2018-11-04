@@ -1,0 +1,49 @@
+
+            <!-- /.box-header -->
+            <!-- form start -->
+            <%= form_with(model: todo, local: true) do |f| %>
+
+              <div class="box-body">
+                <% if current_user.manager?%>
+                <div class="form-group">
+                  <label for="name">Name</label>
+                  <%= f.text_field :name, id: :todo_name ,:class => "form-control" %>
+                </div>
+                <div class="form-group">
+                  <label for="name">Description</label>
+                  <%= f.text_area :description, id: :todo_description, :class => "form-control" %>
+                </div>
+
+                <div class="form-group">
+                  <label for="name"> Project</label>
+                    <%= f.select(:project_id, options_for_select(@projects, :selected => params[:project_id]), { prompt: "Select a project" }, {:class => "form-control"}) %>
+
+                </div>
+
+                <div class="form-group">
+                  <label for="name"> Assign Developer</label>
+                    <%= f.select(:assign_user_id, options_for_select(@users, :selected => todo.present?  ? todo.assign_user_id : nil), { prompt: "Select a developer" }, {:class => "form-control"}) %>
+
+                </div>
+                <%end %>
+               <% if todo.persisted? %>
+                <div class="form-group">
+                  <label for="name"> status</label>
+                    <%= f.select(:status_type_id, options_for_select(@status_types, :selected => todo.present? ? todo.status_type_id : nil), {}, {:class => "form-control"}) %>
+
+                </div>
+                <%end %>
+                
+                
+              </div>
+              <!-- /.box-body -->
+
+              <div class="box-footer">
+                <% if todo.persisted? %>
+                 <%= f.submit 'Update Todo', {:class=>"btn btn-primary"}%>
+                <%else %>
+                <%= f.submit 'Add Todo', {:class=>"btn btn-primary"}%>
+                <% end %>
+              </div>
+            <% end %>
+        
