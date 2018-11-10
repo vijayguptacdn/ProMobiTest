@@ -5,20 +5,17 @@ application up and running.
 
 Things you may want to cover:
 
-* Ruby version
+* Ruby version - ruby 2.3.3p222
 
-* System dependencies
 
-* Configuration
 
-* Database creation
+* rails version - 5.1.6'
 
-* Database initialization
 
-* How to run the test suite
+* Run these command before test this application 
 
-* Services (job queues, cache servers, search engines, etc.)
 
-* Deployment instructions
+* rake db:create
+  rake db:migrate
+  rake db:seed
 
-* ...

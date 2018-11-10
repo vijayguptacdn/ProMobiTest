@@ -17,8 +17,16 @@
             </div>
             <!-- /.box-header -->
             <div class="box-body table-responsive no-padding">
-              <table class="table table-hover">
-                <% if current_user.manager?%> 
+              <div class="box-body table-responsive no-padding" >
+                <% if current_user.manager? && @todos.blank?%>
+                <div class="pull-right">
+                <% if can? :create, Project %>
+                  <%= link_to 'New Project', new_project_path, :class => "btn btn-primary" ,:style => "color:white;"%>
+                <% end %>
+                <% end %>
+              </div>
+              <table class="table table-hover" style="margin-top:50px;">
+                <% if current_user.manager? && @todos.present?%> 
                   <tr>
                    <th>Status</th>
                     <% @users.each do |user|%>
@@ -34,7 +42,7 @@
                       <% end %>
                     </tr>
                     <% end %>
-                <% elsif current_user.developer? %>
+                <% elsif current_user.developer? && @todos%>
                   <% if @todos.present?%>
                     <th>status</th>
                     <% @projects.each do |project|%>
@@ -49,10 +57,13 @@
                     <% end %>
                   <% else %>  
                     <tr>
-                      <td colspan="3"> No projects are asign yet</td>
-                    </tr>
+                      <td colspan="3"> No record present</td>
+                    </tr>  
                   <% end %>
-
+                <% else %>  
+                    <tr>
+                      <td colspan="3"> No record present</td>
+                    </tr>
                 <% end %>    
               </table>
             </div>
@@ -77,16 +88,15 @@
       $(function(){
        <%chart_data = []%>
        <% @projects.each do |project|%>
-
-       <% chart ={} %>
-          google.charts.load('current', {'packages':['corechart']});
        <%
+          chart ={}
           chart[:name] = project.name 
           chart[:id]   = project.id.to_s 
           chart[:data] = project.get_chart_data
           chart_data << chart 
 
         %>
+        google.charts.load('current', {'packages':['corechart']});
          google.charts.setOnLoadCallback(drawChart);
        <% end %>
        
@@ -95,12 +105,7 @@
       function drawChart() {
        <% chart_data.each do |chart|%>
         console.log('<%= chart[:data].to_json.html_safe %>')
-        var data = google.visualization.arrayToDataTable([
-            ['Task', 'Hours per Day'],
-            ['new',     11],
-            ['In-progess',      2],
-            ['done',  2]
-          ]);
+        var data = google.visualization.arrayToDataTable(<%= chart[:data].to_json.html_safe %>);
 
         var options = {
           title: "<%=chart[:name] %>"

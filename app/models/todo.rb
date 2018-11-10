@@ -8,7 +8,7 @@ class Todo < ApplicationRecord
 
   private
    def set_status
-   	 self.status_type_id = 3
+   	 self.status_type_id = 1
    	 self.save!
    end
 end

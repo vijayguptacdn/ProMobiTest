@@ -19,11 +19,13 @@
                 <%= link_to 'New Todo', new_todo_path, :class => "btn btn-primary" ,:style => "color:white;"%>
               <% end %>
             </div>
-              <table class="table table-hover" style="margin-top:20px;">  
+              <table class="table table-hover" style="margin-top:20px;"> 
+               <% if @todos.present?%> 
                 <thead>
                   <tr>
                      <th>Name</th>
                       <th>Description</th>
+                      <th>Project</th>
                       <th>Status</th>
                       <th>Assign user</th>
                       <th>Creater</th>
@@ -32,22 +34,28 @@
                 </thead>
 
               <tbody>
-                <% @todos.each do |todo| %>
-                <tr>
-                  <td><%= todo.name %></td>
-                  <td><%= todo.description %></td>
-                  <td><%= todo.status_type.name %></td>
-                  <td><%= todo.assign_user.name %></td>
-                  <td><%= todo.user.name %></td>
-                  <td><%= link_to 'Edit', edit_todo_path(todo) %></td>
+                  <% @todos.each do |todo| %>
+                  <tr>
+                    <td><%= todo.name %></td>
+                    <td><%= todo.description %></td>
+                    <td><%= todo.project.name %></td>
+                    <td><%= todo.status_type.name %></td>
+                    <td><%= todo.assign_user.name %></td>
+                    <td><%= todo.user.name %></td>
+                    <td><%= link_to 'Edit', edit_todo_path(todo) %></td>
 
-                  <td>
-                      <% if can? :destroy, todo %>
-                        <%= link_to 'Destroy', todo, method: :delete, data: { confirm: 'Are you sure?' } %>
-                      <% end %>
-                    </td>
-                </tr>
-              <% end %>
+                    <td>
+                        <% if can? :destroy, todo %>
+                          <%= link_to 'Destroy', todo, method: :delete, data: { confirm: 'Are you sure?' } %>
+                        <% end %>
+                      </td>
+                  </tr>
+                <% end %>
+              <% else %>
+                   <tr>
+                    <td colspan="3"> No todo found.</td>
+                  </tr>
+                <% end %>  
               </body>               
           </table>
         </div>
